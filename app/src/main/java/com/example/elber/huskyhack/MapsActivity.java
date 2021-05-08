@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -61,8 +62,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(@NonNull Marker marker) {
                 Log.d("wenjalan", "onMarkerClick: " + marker.getTitle());
+                createLocationFragment();
                 return true;
             }
         });
+    }
+
+    // creates a Fragment for showing detailed information about a location
+    private void createLocationFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.location_detail_placeholder, new LocationDetailFragment())
+                .commit();
     }
 }
