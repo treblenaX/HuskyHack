@@ -1,3 +1,9 @@
+<!--
+this is where the google_maps_api.xml went and where the API key goes
+
+the contents of the file look like this but with the key in it:
+
+-->
 <resources>
     <!--
     TODO: Before you run your application, you need a Google Maps API key.
@@ -20,5 +26,7 @@
     Once you have your key (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
     -->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">YOUR_KEY_HERE</string>
+    <!--
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">SOME KEY GOES HERE</string>
+    -->
 </resources>
