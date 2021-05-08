@@ -10,15 +10,21 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PointOfInterest;
+
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+
+    private Map<String, Integer> markerIdToLocationId = new TreeMap<>();
+
+    private Map<Integer, DataModels.Location> locationIdToLocation = new TreeMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,30 +55,55 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        this.mMap = googleMap;
 
         // Add a marker in the quad and move the camera
         LatLng uwQuad = new LatLng(47.6579251, -122.3078048);
-        mMap.addMarker(new MarkerOptions().position(uwQuad).title("Hi Elbert"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(uwQuad));
+        // mMap.addMarker(new MarkerOptions().position(uwQuad).title("Hi Elbert"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(uwQuad, 17));
 
         // add a new marker click listener
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(@NonNull Marker marker) {
+                // log click
                 Log.d("wenjalan", "onMarkerClick: " + marker.getTitle());
-                createLocationFragment();
+
+                // get the Location associated with this marker
+                long locationId = markerIdToLocationId.get(marker.getId());
+                DataModels.Location location = locationIdToLocation.get(locationId);
+
+                // create a Location Fragment for this location
+                createLocationFragment(location);
+
+                // return success
                 return true;
             }
         });
     }
 
+    // adds markers to a map given a list of Locations
+    private void addLocationMarkers(List<DataModels.Location> locations, GoogleMap map) {
+        // for each location, create a MarkerOptions and add it to the map
+        for (DataModels.Location l : locations) {
+            // create options
+            MarkerOptions m = new MarkerOptions()
+                    .position(new LatLng(l.lat, l.lon))
+                    .title("" + l.locationID);
+
+            // add to map
+            Marker marker = map.addMarker(m);
+
+            // save the marker id to its location id
+            markerIdToLocationId.put(marker.getId(), l.locationID);
+        }
+    }
+
     // creates a Fragment for showing detailed information about a location
-    private void createLocationFragment() {
+    private void createLocationFragment(DataModels.Location location) {
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .replace(R.id.location_detail_placeholder, new LocationDetailFragment())
+                .replace(R.id.location_detail_placeholder, new LocationDetailFragment(location))
                 .commit();
     }
 }

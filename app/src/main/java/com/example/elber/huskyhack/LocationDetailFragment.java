@@ -11,6 +11,14 @@ import android.view.ViewGroup;
 
 public class LocationDetailFragment extends Fragment {
 
+    // the location this fragment is representing
+    private final DataModels.Location location;
+
+    // create a new fragment with some location
+    public LocationDetailFragment(DataModels.Location location) {
+        this.location = location;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
