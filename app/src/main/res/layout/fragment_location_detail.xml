@@ -4,41 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:background="#629749"
     tools:context=".LocationDetailFragment"
     android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/locationTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Some Title Goes Here"
-        android:textSize="14pt" />
+        android:textSize="14pt"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF" />
 
     <TextView
         android:id="@+id/rating"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="SomeRating"
-        android:textSize="14sp" />
+        android:textStyle="bold|italic"
+        android:textColor="#FFFFFF"
+        />
 
     <LinearLayout
         android:id="@+id/review_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Reviews" />
-
-        <TextView
-            android:id="@+id/reviewPlaceholder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="ReviewGoesHere" />
+        android:orientation="vertical"
+        android:padding="4dp">
     </LinearLayout>
 
 

@@ -1,5 +1,7 @@
 package com.example.elber.huskyhack;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.elber.huskyhack.models.Location;
+import com.example.elber.huskyhack.models.RATE;
 import com.example.elber.huskyhack.models.Rating;
 
 public class LocationDetailFragment extends Fragment {
@@ -42,13 +45,31 @@ public class LocationDetailFragment extends Fragment {
         // set the details of the fragment based on the location
         locationTitle.setText(location.locationName);
         int nRatings = location.allRatingIDs == null ? 0 : location.allRatingIDs.size();
-        rating.setText(location.overallRating + "・" + nRatings + " ratings");
+
+        // get rating
+        String ratingText = "Good";
+        if (location.overallRating == RATE.NEUTRAL) {
+            ratingText = "Okay";
+        }
+        else if (location.overallRating == RATE.NEGATIVE) {
+            ratingText = "Needs Improvement";
+        }
+        rating.setText(ratingText + "・" + nRatings + " ratings");
+        rating.setTextColor(Color.WHITE);
 
         // add reviews
         for (Rating r : location.allRatingIDs) {
             // create the view
             TextView reviewView = new TextView(this.getContext());
-            reviewView.setText(r.rating + "・" + r.date + "\n" + r.review);
+            String reviewRatingText = "Good";
+            if (r.rating == RATE.NEUTRAL) {
+                reviewRatingText = "Okay";
+            }
+            else if (r.rating == RATE.NEGATIVE) {
+                reviewRatingText = "Needs Improvement";
+            }
+            reviewView.setText(r.date + "・" + reviewRatingText + "\n" + r.review + "\n");
+            reviewView.setTextColor(Color.WHITE);
 
             // add the review to the layout
             reviewLayout.addView(reviewView);

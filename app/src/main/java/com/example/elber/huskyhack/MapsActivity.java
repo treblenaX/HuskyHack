@@ -23,6 +23,8 @@ import androidx.fragment.app.FragmentActivity;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final int MAP_DEFAULT_ZOOM_LEVEL = 17;
+
     private SQLUtil sqlUtil;
 
     private GoogleMap mMap;
@@ -121,7 +123,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // move camera to first location
         Location firstLocation = locations.get(0);
         LatLng ll = new LatLng(firstLocation.lat, firstLocation.lon);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 1));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, MAP_DEFAULT_ZOOM_LEVEL));
     }
 
     // creates a Fragment for showing detailed information about a location
