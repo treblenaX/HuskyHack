@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.elber.huskyhack.models.Location;
+import com.example.elber.huskyhack.models.RATE;
 import com.example.elber.huskyhack.sql.SQLUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -108,8 +110,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (Location l : locations) {
             // log
             Log.d("wenjalan", "Adding new marker for location " + l.locationName + " at X:" + l.lat + ", Y:" + l.lon);
+
+            // calculate the color to give
+            float color;
+            if (l.overallRating == RATE.POSITIVE) {
+                color = BitmapDescriptorFactory.HUE_GREEN;
+            }
+            else if (l.overallRating == RATE.NEUTRAL) {
+                color = BitmapDescriptorFactory.HUE_YELLOW;
+            }
+            else {
+                color = BitmapDescriptorFactory.HUE_RED;
+            }
+
             // create options
             MarkerOptions m = new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.defaultMarker(color))
                     .position(new LatLng(l.lat, l.lon))
                     .title(l.locationName);
 
