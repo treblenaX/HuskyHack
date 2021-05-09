@@ -77,7 +77,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d("wenjalan", "onMarkerClick: " + marker.getTitle());
 
                 // get the Location associated with this marker
-                long locationId = markerIdToLocationId.get(marker.getId());
+                int locationId = markerIdToLocationId.get(marker.getId());
                 Location location = locationIdToLocation.get(locationId);
 
                 // create a Location Fragment for this location
@@ -91,6 +91,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // saves location data
     public void acceptLocationData(List<Location> locations) {
+        // map location ids to locations
+        for (Location l : locations) {
+            this.locationIdToLocation.put(l.locationID, l);
+        }
         if (mMap != null) {
             addLocationMarkers(locations, mMap);
         }
