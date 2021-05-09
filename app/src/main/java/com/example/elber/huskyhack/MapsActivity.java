@@ -87,6 +87,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // create a Location Fragment for this location
                 createLocationFragment(location);
 
+                // move the camera to this location
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+
                 // return success
                 return true;
             }

@@ -68,7 +68,7 @@ public class LocationDetailFragment extends Fragment {
             else if (r.rating == RATE.NEGATIVE) {
                 reviewRatingText = "Needs Improvement";
             }
-            reviewView.setText(r.date + "・" + reviewRatingText + "\n" + r.review + "\n");
+            reviewView.setText(r.date + "・" + reviewRatingText + "・" + r.author + "\n" + r.review + "\n");
             reviewView.setTextColor(Color.WHITE);
 
             // add the review to the layout
