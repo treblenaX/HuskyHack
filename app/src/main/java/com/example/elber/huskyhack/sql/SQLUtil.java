@@ -1,5 +1,8 @@
 package com.example.elber.huskyhack.sql;
 
+import android.util.Log;
+
+import com.example.elber.huskyhack.MapsActivity;
 import com.example.elber.huskyhack.models.Location;
 import com.example.elber.huskyhack.models.RATE;
 import com.example.elber.huskyhack.models.Rating;
@@ -15,6 +18,14 @@ public class SQLUtil implements AsyncResponse {
     private static Connection _connection;
     public static List<Location> allLocations;
     public static List<Rating> allRatings;
+    private MapsActivity mapsActivity;
+
+
+    // constructor
+    public SQLUtil(MapsActivity mapsActivity) {
+        // save the mapsActivity to reference callback
+        this.mapsActivity = mapsActivity;
+    }
 
     public void connectToDB() {
         MySQLAsyncTask mS = new MySQLAsyncTask();
@@ -71,7 +82,8 @@ public class SQLUtil implements AsyncResponse {
 
     @Override
     public void processFinish(String output) {
-
+        Log.d("wenjalan", "Loaded locations data from SQL");
+        mapsActivity.acceptLocationData(allLocations);
     }
 
     public static void setConnection (Connection con) {

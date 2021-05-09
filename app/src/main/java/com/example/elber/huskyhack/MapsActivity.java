@@ -1,8 +1,10 @@
 package com.example.elber.huskyhack;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.elber.huskyhack.models.Location;
 import com.example.elber.huskyhack.sql.SQLUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,15 +18,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private SQLUtil sqlUtil;
+
     private GoogleMap mMap;
+
+    private List<Location> locations;
 
     private Map<String, Integer> markerIdToLocationId = new TreeMap<>();
 
-    private Map<Integer, DataModels.Location> locationIdToLocation = new TreeMap<>();
+    private Map<Integer, Location> locationIdToLocation = new TreeMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +43,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         // MySQL util init
-        SQLUtil sUtil = new SQLUtil();
-        sUtil.connectToDB();
+        this.sqlUtil = new SQLUtil(this);
+        this.sqlUtil.connectToDB();
     }
 
 
@@ -59,12 +66,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        // save map as reference
         this.mMap = googleMap;
-
-        // Add a marker in the quad and move the camera
-        LatLng uwQuad = new LatLng(47.6579251, -122.3078048);
-        // mMap.addMarker(new MarkerOptions().position(uwQuad).title("Hi Elbert"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(uwQuad, 17));
 
         // add a new marker click listener
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -75,7 +78,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 // get the Location associated with this marker
                 long locationId = markerIdToLocationId.get(marker.getId());
-                DataModels.Location location = locationIdToLocation.get(locationId);
+                Location location = locationIdToLocation.get(locationId);
 
                 // create a Location Fragment for this location
                 createLocationFragment(location);
@@ -86,14 +89,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    // saves location data
+    public void acceptLocationData(List<Location> locations) {
+        if (mMap != null) {
+            addLocationMarkers(locations, mMap);
+        }
+    }
+
     // adds markers to a map given a list of Locations
-    private void addLocationMarkers(List<DataModels.Location> locations, GoogleMap map) {
+    private void addLocationMarkers(List<Location> locations, GoogleMap map) {
         // for each location, create a MarkerOptions and add it to the map
-        for (DataModels.Location l : locations) {
+        for (Location l : locations) {
+            // log
+            Log.d("wenjalan", "Adding new marker for location " + l.locationName + " at X:" + l.lat + ", Y:" + l.lon);
             // create options
             MarkerOptions m = new MarkerOptions()
                     .position(new LatLng(l.lat, l.lon))
-                    .title("" + l.locationID);
+                    .title(l.locationName);
 
             // add to map
             Marker marker = map.addMarker(m);
@@ -101,10 +113,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // save the marker id to its location id
             markerIdToLocationId.put(marker.getId(), l.locationID);
         }
+
+        // move camera to first location
+        Location firstLocation = locations.get(0);
+        LatLng ll = new LatLng(firstLocation.lat, firstLocation.lon);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 1));
     }
 
     // creates a Fragment for showing detailed information about a location
-    private void createLocationFragment(DataModels.Location location) {
+    private void createLocationFragment(Location location) {
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
                 .replace(R.id.location_detail_placeholder, new LocationDetailFragment(location))
